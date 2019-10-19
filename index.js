@@ -56,7 +56,7 @@ client.on("message", message => {
 
     if (message.author.bot) return;
     if (!message.guild) return;
-    if (message.content.includes("525382819808280597")) {
+    if (message.content.includes(credentials.myId)) {
       console.log("Someone is mentioning cobugbot");
       message
         .react("🇸")
