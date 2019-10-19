@@ -16,7 +16,7 @@ const roleId = "484838319117565952";
 const fetchRandomMember = async () => {
   try {
     client.guilds
-      .get(credentials.guildId)
+      .get(credentials.guildId) //remove the dingdong role from all users that currently have it
       .roles.get(roleId)
       .members.forEach(member => {
         member.removeRole(roleId);
@@ -25,8 +25,7 @@ const fetchRandomMember = async () => {
     console.log(error);
   }
 
-  let memberCount = client.guilds.get(credentials.guildId).memberCount;
-  // console.log("CurrentDingDong: ", currentDingDong);
+  let memberCount = client.guilds.get(credentials.guildId).memberCount; //get the total number of server members
 
   announcementsCounter++;
   if (announcementsCounter > broadcasts.length) announcementsCounter = 0;
@@ -38,34 +37,28 @@ const fetchRandomMember = async () => {
     members = await client.guilds
       .get(credentials.guildId)
       .members.map(member => member);
-    // console.log(members[announcementsCounter].user);
   } catch (error) {
     console.log("I fucked up getting a random user!", error);
   }
 
+  try {
+    members[membersCounter].addRole(roleId);
+    console.log(`Making ${members[membersCounter]} DingDong of the day!`);
+  } catch (error) {
+    console.log("Trying to add dingDong role", error);
+  }
+
   if (dingedMembers.length === memberCount) dingedMembers = [];
 
-  // dingedMembers.includes(randomMember) //random member in the previously dinged array?
-  //   ? fetchRandomMember()               //run the randomMember function again
-  //   : dingedMembers.push(randomMember); //else add the member to the array
-
-  // console.log(
-  //   `${members[membersCounter]} ${broadcasts[announcementsCounter]} `
-  // );
-  // console.log(`MembersCounter: `, membersCounter);
-  // console.log(`AnnouncementsCounter: `, announcementsCounter);
-
-  // client.channels
-  //   .get(credentials.speechChannelId)
-  //   .send(`${members[membersCounter]} ${broadcasts[announcementsCounter]}`);
-
-  // console.log(client.guilds(credentials.guildId).members.)
+  client.channels
+    .get(credentials.speechChannelId)
+    .send(`${members[membersCounter]} ${broadcasts[announcementsCounter]}`);
 };
 
 client.on("ready", () => {
   console.log(`${client.user.tag} logged in, all systems go!`);
 
-  setInterval(fetchRandomMember, 5000);
+  setInterval(fetchRandomMember, 86400000); //run once every 24 hours
 });
 
 client.on("message", message => {
