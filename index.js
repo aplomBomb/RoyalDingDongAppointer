@@ -7,22 +7,20 @@ var day = new Date();
 var hour = day.getHours();
 let dingedMembers = [];
 let speechChannel = credentials.speechChannelId;
-
-const checkForTime = () => {
-  if (hour === 8) {
-    console.log(n);
-    return true;
-  } else return false;
-};
+let announcementsCounter = Math.floor(
+  Math.random() * Math.floor(announcements.announcements.length)
+);
 
 const fetchRandomMember = async () => {
+  announcementsCounter++;
+  if (announcementsCounter === announcements.length) announcementsCounter = 1;
   let memberCount = client.guilds.get(credentials.guildId).memberCount;
-  console.log("Fetching random user");
-  console.log("Member count: ", memberCount);
-
+  // console.log("Fetching random user");
+  // console.log("Member count: ", memberCount);
+  // console.log(announcements.announcements[1]);
   try {
     randomMember = await client.guilds.get(credentials.guildId).members.random()
-      .user.username;
+      .user;
   } catch (error) {
     console.log("I fucked up getting a random user!", error);
   }
@@ -33,8 +31,12 @@ const fetchRandomMember = async () => {
     ? fetchRandomMember() //run the randomMember function again
     : dingedMembers.push(randomMember); //else add the member to the array
 
-  console.log("randomMember: ", randomMember);
-  console.log("dingedMembers: ", dingedMembers);
+  client.channels
+    .get("498998479562211348")
+    .send(`test ${randomMember} ${announcementsCounter}`);
+
+  // console.log("randomMember: ", randomMember);
+  // console.log("dingedMembers: ", dingedMembers);
   return randomMember;
 };
 
