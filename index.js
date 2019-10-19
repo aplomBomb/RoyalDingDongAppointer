@@ -3,41 +3,49 @@ const client = new Discord.Client();
 const credentials = require("./credentials.json");
 const announcements = require("./announcements");
 
+const broadcasts = announcements.announcements;
 var day = new Date();
 var hour = day.getHours();
 let dingedMembers = [];
 let speechChannel = credentials.speechChannelId;
 let announcementsCounter = Math.floor(
-  Math.random() * Math.floor(announcements.announcements.length)
+  Math.random() * Math.floor(broadcasts.length)
 );
+let membersCounter = Math.floor(Math.random() * Math.floor(broadcasts.length));
 
 const fetchRandomMember = async () => {
-  announcementsCounter++;
-  if (announcementsCounter === announcements.length) announcementsCounter = 1;
   let memberCount = client.guilds.get(credentials.guildId).memberCount;
+
+  announcementsCounter++;
+  if (announcementsCounter > broadcasts.length) announcementsCounter = 0;
+
+  membersCounter++;
+  if (membersCounter > memberCount) membersCounter = 0;
+
   // console.log("Fetching random user");
   // console.log("Member count: ", memberCount);
   // console.log(announcements.announcements[1]);
   try {
-    randomMember = await client.guilds.get(credentials.guildId).members.random()
-      .user;
+    members = await client.guilds
+      .get(credentials.guildId)
+      .members.map(member => member);
+    console.log(members[announcementsCounter].user);
   } catch (error) {
     console.log("I fucked up getting a random user!", error);
   }
 
   if (dingedMembers.length === memberCount) dingedMembers = [];
 
-  dingedMembers.includes(randomMember) //random member in the previously dinged array?
-    ? fetchRandomMember() //run the randomMember function again
-    : dingedMembers.push(randomMember); //else add the member to the array
+  // dingedMembers.includes(randomMember) //random member in the previously dinged array?
+  //   ? fetchRandomMember()               //run the randomMember function again
+  //   : dingedMembers.push(randomMember); //else add the member to the array
 
-  client.channels
-    .get("498998479562211348")
-    .send(`test ${randomMember} ${announcementsCounter}`);
-
+  // client.channels
+  //   .get("498998479562211348")
+  //   .send(`test ${randomMember} ${announcementsCounter}`);
+  console.log(`${randomMember.username} ${broadcasts[announcementsCounter]} `);
   // console.log("randomMember: ", randomMember);
   // console.log("dingedMembers: ", dingedMembers);
-  return randomMember;
 };
 
 client.on("ready", () => {
