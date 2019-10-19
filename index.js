@@ -4,8 +4,6 @@ const credentials = require("./credentials.json");
 const announcements = require("./announcements");
 
 const broadcasts = announcements.announcements;
-var day = new Date();
-var hour = day.getHours();
 let dingedMembers = [];
 let speechChannel = credentials.speechChannelId;
 let announcementsCounter = Math.floor(
@@ -13,8 +11,22 @@ let announcementsCounter = Math.floor(
 );
 let membersCounter = Math.floor(Math.random() * Math.floor(broadcasts.length));
 
+const roleId = "484838319117565952";
+
 const fetchRandomMember = async () => {
+  try {
+    client.guilds
+      .get(credentials.guildId)
+      .roles.get(roleId)
+      .members.forEach(member => {
+        member.removeRole(roleId);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+
   let memberCount = client.guilds.get(credentials.guildId).memberCount;
+  // console.log("CurrentDingDong: ", currentDingDong);
 
   announcementsCounter++;
   if (announcementsCounter > broadcasts.length) announcementsCounter = 0;
@@ -22,14 +34,11 @@ const fetchRandomMember = async () => {
   membersCounter++;
   if (membersCounter > memberCount) membersCounter = 0;
 
-  // console.log("Fetching random user");
-  // console.log("Member count: ", memberCount);
-  // console.log(announcements.announcements[1]);
   try {
     members = await client.guilds
       .get(credentials.guildId)
       .members.map(member => member);
-    console.log(members[announcementsCounter].user);
+    // console.log(members[announcementsCounter].user);
   } catch (error) {
     console.log("I fucked up getting a random user!", error);
   }
@@ -40,18 +49,23 @@ const fetchRandomMember = async () => {
   //   ? fetchRandomMember()               //run the randomMember function again
   //   : dingedMembers.push(randomMember); //else add the member to the array
 
+  // console.log(
+  //   `${members[membersCounter]} ${broadcasts[announcementsCounter]} `
+  // );
+  // console.log(`MembersCounter: `, membersCounter);
+  // console.log(`AnnouncementsCounter: `, announcementsCounter);
+
   // client.channels
-  //   .get("498998479562211348")
-  //   .send(`test ${randomMember} ${announcementsCounter}`);
-  console.log(`${randomMember.username} ${broadcasts[announcementsCounter]} `);
-  // console.log("randomMember: ", randomMember);
-  // console.log("dingedMembers: ", dingedMembers);
+  //   .get(credentials.speechChannelId)
+  //   .send(`${members[membersCounter]} ${broadcasts[announcementsCounter]}`);
+
+  // console.log(client.guilds(credentials.guildId).members.)
 };
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`${client.user.tag} logged in, all systems go!`);
 
-  setInterval(fetchRandomMember, 2000);
+  setInterval(fetchRandomMember, 5000);
 });
 
 client.on("message", message => {
@@ -76,9 +90,6 @@ client.on("message", message => {
         .catch(() => {
           console.log("Failed to react with emoji");
         });
-    }
-    if (cmd === "refresh") {
-      if (message.deletable) message.delete();
     }
   })().catch(console.log);
 });
