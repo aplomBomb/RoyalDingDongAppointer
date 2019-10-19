@@ -1,0 +1,12 @@
+{
+  "name": "dingDongBot",
+  "version": "1.0.0",
+  "description": "A royal bot that's responsible for a lot",
+  "main": "index.js",
+  "author": "aplombomb",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  }
+}
