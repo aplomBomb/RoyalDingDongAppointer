@@ -1,10 +1,12 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const credentials = require("./credentials.json");
+const announcements = require("./announcements");
 
 var day = new Date();
 var hour = day.getHours();
 let dingedMembers = [];
+let speechChannel = credentials.speechChannelId;
 
 const checkForTime = () => {
   if (hour === 8) {
@@ -39,8 +41,6 @@ const fetchRandomMember = async () => {
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
-  // console.log(client.guilds);
-
   setInterval(fetchRandomMember, 2000);
 });
 
@@ -56,7 +56,7 @@ client.on("message", message => {
 
     if (message.author.bot) return;
     if (!message.guild) return;
-    if (message.content.includes(credentials.myId)) {
+    if (message.content.includes(credentials.cobugbotId)) {
       console.log("Someone is mentioning cobugbot");
       message
         .react("🇸")
@@ -69,13 +69,6 @@ client.on("message", message => {
     }
     if (cmd === "refresh") {
       if (message.deletable) message.delete();
-      message.channel.send();
-      randomMember = await client.guilds
-        .get("471689270399336448")
-        .members.random().user.id;
-
-      console.log("Online members: ", members);
-      console.log(message.guild.id);
     }
   })().catch(console.log);
 });
