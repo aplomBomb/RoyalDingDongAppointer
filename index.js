@@ -32,12 +32,9 @@ const fetchRandomMember = async () => {
   }
 
   try {
-    client.guilds
-      .get(credentials.guildId) //remove the dingdong role from all users that currently have it
-      .roles.get(roleId)
-      .members.forEach(member => {
-        member.removeRole(roleId);
-      });
+    currentDingDongs.forEach(member => {
+      member.removeRole(roleId);
+    });
   } catch (error) {
     console.log(error);
   }
