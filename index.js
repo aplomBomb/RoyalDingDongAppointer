@@ -12,8 +12,25 @@ let announcementsCounter = Math.floor(
 let membersCounter = Math.floor(Math.random() * Math.floor(broadcasts.length));
 
 const roleId = "484838319117565952";
+const ditcherRole = "638523173024956426";
 
 const fetchRandomMember = async () => {
+  let lastDingMessage = await speechChannel
+    .fetchMessages({ limit: 1 })
+    .then(messages => {
+      return messages.first();
+    });
+
+  let currentDingDongs = await client.guilds
+    .get(credentials.guildId)
+    .roles.get(roleId).members;
+
+  if (lastDingMessage.author.bot) {
+    currentDingDongs.forEach(member => {
+      member.addRole(ditcherRole);
+    });
+  }
+
   try {
     client.guilds
       .get(credentials.guildId) //remove the dingdong role from all users that currently have it
